@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrera PDF List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        form {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        select, button {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .semestre-title {
+            background-color: #f9f9f9;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .semestre-container {
+            border: 1px solid #ddd;
+            padding: 10px;
+            vertical-align: top;
+        }
+
+    .checkbox-container input {
+        text-align: right; 
+    }
+
+    </style>
+</head>
+<body>
+<form id="pdfForm" method="POST" action="{% url 'pdf_to_html' %}">
+    {% csrf_token %}
+    <select name="id_carrera" id="id_carrera">
+        <option value="">Seleccione una carrera</option>
+        {% for carrera in carreras %}
+            <option value="{{ carrera.id }}" {% if carrera.id == selected_carrera_id %}selected{% endif %}>
+                {{ carrera.nombre }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <table id="pdf_table">
+        <tbody>
+            <tr>
+                <td class="semestre-container" colspan="2">
+                    <strong>Primer Semestre</strong>
+                    <hr>
+                    {% for pdfprimer in pdfsprimer %}
+                            <div>{{ pdfprimer.materia }} <input type="checkbox" class="pdf_checkbox" name="pdf_ids" id="pdf_ids" value="{{ pdfprimer.id }}"></div>
+                    {% endfor %}
+                </td>
+                <td class="semestre-container" colspan="2">
+                    <strong>Segundo Semestre</strong>
+                    <hr>
+                    {% for pdfsegundo in pdfssegundo %}
+                            <div>{{ pdfsegundo.materia }} <input type="checkbox" class="pdf_checkbox" name="pdf_ids" value="{{ pdfsegundo.id }}"></div>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td class="semestre-container" colspan="2">
+                    <strong>Tercer Semestre</strong>
+                    <hr>
+                    {% for pdftercero in pdfstercero %}
+                            <div>{{ pdftercero.materia }} <input type="checkbox" name="pdf_ids" value="{{ pdftercero.id }}"></div>
+                    {% endfor %}
+                </td>
+                <td class="semestre-container" colspan="2">
+                    <strong>Cuarto Semestre</strong>
+                    <hr> 
+                    {% for pdfcuarto in pdfscuarto %}
+                            <div>{{ pdfcuarto.materia }} <input type="checkbox" name="pdf_ids" value="{{ pdfcuarto.id }}"></div>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td class="semestre-container" colspan="2">
+                    <strong>Quinto Semestre</strong>
+                    <hr>
+                    {% for pdfquinto in pdfsquinto %}
+                            <div>{{ pdfquinto.materia }} <input type="checkbox" name="pdf_ids" value="{{ pdfquinto.id }}"></div>
+                    {% endfor %}
+                </td>
+                <td class="semestre-container" colspan="2">
+                    <strong>Sexto Semestre</strong>
+                    <hr>
+                    {% for pdfsexto in pdfssexto %}
+                    <div>{{ pdfsexto.materia }} <input type="checkbox" name="pdf_ids" value="{{ pdfsexto.id }}"></div>
+            {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td class="semestre-container" colspan="2">
+                    <strong>Septimo Semestre</strong>
+                    <hr>
+                    {% for pdfseptimo in pdfsseptimo %}
+                            <div>{{ pdfseptimo.materia }} <input type="checkbox" name="pdf_ids" value="{{ pdfseptimo.id }}"></div>
+                    {% endfor %}
+                </td>
+                <td class="semestre-container" colspan="2">
+                    <strong>Octavo Semestre</strong>
+                    <hr>
+                    {% for pdfoctavo in pdfsoctavo %}
+                            <div>{{ pdfoctavo.materia }} <input type="checkbox" name="pdf_ids" value="{{ pdfoctavo.id }}"></div>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td class="semestre-container" colspan="2">
+                    <strong>Noveno Semestre</strong>
+                    <hr>
+                    {% for pdfnoveno in pdfsnoveno %}
+                            <div>{{ pdfnoveno.materia }} <input type="checkbox" name="pdf_ids" value="{{ pdfnoveno.id }}"></div>
+                    {% endfor %}
+                </td>
+                <td class="semestre-container" colspan="2">
+                    <strong>Décimo Semestre</strong>
+                    <hr>
+                    {% for pdfdecimo in pdfsdecimo %}
+                            <div>{{ pdfdecimo.materia }} <input type="checkbox" name="pdf_ids" value="{{ pdfdecimo.id }}"></div>
+                    {% endfor %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <input type="hidden" id="selected_pdfs" name="selected_pdfs">
+
+    <button type="submit" onclick="submitForm()"> Imprimir Seleccionados</button>
+
+</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#id_carrera').change(function () {
+            var selectedCarreraId = $(this).val();
+            $.ajax({
+                url: window.location.pathname + '?id_carrera=' + selectedCarreraId,
+                success: function (data) {
+                    var newRows = $(data).find('#pdf_table tbody').html();
+                    $('#pdf_table tbody').html(newRows);
+                }
+            });
+        });
+    });
+    function submitForm() {
+        var selectedIds = [];
+        var checkboxes = document.getElementsByClassName('pdf_checkbox');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                selectedIds.push(checkboxes[i].value);
+            }
+        }
+        document.getElementById('selected_pdfs').value = JSON.stringify(selectedIds);
+        document.getElementById('pdfForm').submit();
+    }
+</script>
+</body>
+</html>
